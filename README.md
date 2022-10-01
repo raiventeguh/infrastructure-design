@@ -44,6 +44,7 @@ we could use simple first while trying to see what kinda of traffic that we look
 
 ### How to Access Internal Server
 Accessing Internal server is similar with Accesing API the differences is, Internal API don't need to be routed to API gateway again. Each Backend Service can access by hitting the Cloudmap (Internal DNS)
+
 ## Compute
 Since we are building this on top of Modular Monolith, doing containeraized solution will bring benefit. We could do Kubernets or Docker, however depending the team and learning curve (assumming everyone is new) docker is easier to learn instead of Kubernets. 
 Kube more powerful tho and easier to manage than docker
@@ -52,8 +53,11 @@ Specfic for compute:
 - Fargate with AutoScaling
 - Small Task Compute & memory 
 - Sidecar for tracing 
+
 ## Migrations
 Postgresql will be reside in private subnet, to ensure security reason (can't be accessed by anyone over internet)
+RDS is chosen instead of aurora due to price. Even thos aurora is more scalable, but the price currently it's still a bit too high. 
+Especially "Pause" while inactive can't be used if application using Connection pooling. 
 Due to this reason having a migration pipeline (Db Versioning) is better solution
 there are few DB Migration for postgres, the major one is sqitch and Liquibas. (assume with liquibase) 
 
@@ -83,3 +87,22 @@ Monitoring will be using X-ray for distributed tracing, Prometheus or Cloudwatch
 This approach is vendor locked, and using grafana so we could share the dashboard to a lot of user instead of cloudwatch metrics. 
 
 Notes: Cloudwatch Chart is kinda bad right now, so grafana is preferred (but adding extra cost for license every month)
+
+
+# Pros & Cons for this approach
+## Pros
+- this can handle big load (compute scale horizontally with autoscale, db a bit harder (with capacity plannning))
+- Database secured enough
+- No extra cost on NAT since we put compute on public subnet (without attaching dedicated ip) 
+- Fronted scaling better due to edge in Cloudfront
+- Automated deployment can be done easily without provisioning or managing 3rd party option
+- Cost relatively on lower side
+- API Gateway can be extended with multiplle scenario, such as auth first. 
+
+## Cons
+- Public subnet can be accessed (hard tho) 
+- Database not really scaling well, need capcity planning 
+- Cloudmap is relatively new, and latencies and other things haven't really been checked
+- API Gateway have hard limitation on Request per Seconds (Soft and hard) -> if grow big enough need to change to other LB solution
+- Distributed Tracing Xray still not mature -> other option we could use new relic but the price is hefty
+- Codebuild is slow especially on provisioning with VPC attached
