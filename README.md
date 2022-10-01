@@ -16,7 +16,6 @@ Stack:
 Frontend usually can be static site instead of Server or Incremental or Client Side
 the difference is on how handling request. I probably won't divulge on each scenario in here. 
 
-The Flow is
 ## Building Proces
 - CI/CD Trigger
 - Framework will generate the static site 
@@ -73,7 +72,7 @@ Need to be in private subnet, to access db
 Notes: Since codebuild in Private subnet, it will take more time to provisioning. roughly almost 100% longer (usually around 40 - 60second -> change to almost 120s for provisioning)
 
 
-## Secret
+# Secret
 Parameter store or Secret manager
 - both can works
 - parameter store is more static
@@ -82,7 +81,7 @@ Parameter store or Secret manager
 Note: rotate secret manager a bit tricky before, and can make some downtime (haven't check this again)
 - due to this can make downtime for the time being parameter store for static DB or other creds is still preferable
 
-## Monitoring and Logging
+# Monitoring and Logging
 Logging will be using cloudwatch logs, Most of AWS service can integrate seamlessly with Cloudwatch.
 
 Monitoring will be using X-ray for distributed tracing, Prometheus or Cloudwatch metrics(based on preference) and Grafana for Visualization 
