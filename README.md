@@ -3,6 +3,9 @@
 # Assumption
 1. Small Scale
 2. Cost Conscious
+3. Vendor Locked - AWS
+4. Github for Repo 
+5. Slack 
 
 # Frontend
 Stack: 
